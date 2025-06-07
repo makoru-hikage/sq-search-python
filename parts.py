@@ -21,12 +21,3 @@ def get_intersection_sum(base, cell_index):
         cell_index
     )
 
-def get_intersection_diff(base, cell_index):
-    return get_row_index(
-        base,
-        cell_index
-    ) - get_column_index(
-        base,
-        cell_index
-    )
-

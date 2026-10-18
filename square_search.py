@@ -82,6 +82,9 @@ def square_search(haystack, needle):
         vo  = vertical_opposite(base, cell)
         aso = antidiagonal_opposite(base, cell)
         dso = diagonal_opposite(base, cell)
+        r90  = rotation_90(base, cell)
+        r180 = rotation_180(base, cell)
+        r270 = rotation_270(base, cell)
 
         if haystack[cell] == needle:
             return cell
@@ -97,6 +100,15 @@ def square_search(haystack, needle):
 
         if dso < haystack_size and haystack[dso] == needle:
             return dso
+
+        if r90 < haystack_size and haystack[r90] == needle:
+            return r90
+
+        if r180 < haystack_size and haystack[r180] == needle:
+            return r180
+
+        if r270 < haystack_size and haystack[r270] == needle:
+            return r270
 
         if get_column_index(base, cell) != base_middle:
             cell += 1

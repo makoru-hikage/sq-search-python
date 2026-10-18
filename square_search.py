@@ -1,5 +1,3 @@
-import math
-
 def find_nearest_square_root(n):
     b = 1
     while b ** 2 < n:
@@ -47,13 +45,13 @@ def diagonal_opposite(base, cell_index):
     )
 
 def get_top_left_quadrant_last_cell(base):
-    base_middle = math.floor((base + 1) / 2)
+    base_middle = (base + 1) // 2
     return (base + 1) * (base_middle - 1)
 
 def square_search(haystack, needle):
     haystack_size = len(haystack)
     base = find_nearest_square_root(haystack_size)
-    base_middle = math.floor((base + 1) / 2)
+    base_middle = (base + 1) // 2
 
     cell = 0
     last_iterated_cell = get_top_left_quadrant_last_cell(base)

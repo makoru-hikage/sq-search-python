@@ -5,5 +5,5 @@ needle = 42
 
 found = square_search(haystack, needle)
 
-if found >= 1 and found <= len(haystack):
+if found != -1:
     print (f'The needle, {needle}, is found at cell {found}')

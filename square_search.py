@@ -65,50 +65,36 @@ def diagonal_opposite(base, cell_index):
         get_row_index(base, cell_index)
     )
 
+def get_heads(base, cell_index):
+    return [
+        cell_index,
+        horizontal_opposite(base, cell_index),
+        vertical_opposite(base, cell_index),
+        antidiagonal_opposite(base, cell_index),
+        diagonal_opposite(base, cell_index),
+        rotation_90(base, cell_index),
+        rotation_180(base, cell_index),
+        rotation_270(base, cell_index),
+    ]
+
 def get_top_left_quadrant_last_cell(base):
     base_middle = (base + 1) // 2
     return (base + 1) * (base_middle - 1)
 
 def square_search(haystack, needle):
-    haystack_size = len(haystack)
-    base = find_nearest_square_root(haystack_size)
-    base_middle = (base + 1) // 2
+    base         = find_nearest_square_root(len(haystack))
+    base_middle  = (base + 1) // 2
+    sentinel     = object()
+    padded       = haystack + [sentinel] * (base * base - len(haystack))
 
-    cell = 0
+    cell             = 0
     last_iterated_cell = get_top_left_quadrant_last_cell(base)
 
     while cell <= last_iterated_cell:
-        ho  = horizontal_opposite(base, cell)
-        vo  = vertical_opposite(base, cell)
-        aso = antidiagonal_opposite(base, cell)
-        dso = diagonal_opposite(base, cell)
-        r90  = rotation_90(base, cell)
-        r180 = rotation_180(base, cell)
-        r270 = rotation_270(base, cell)
+        found = next((c for c in get_heads(base, cell) if padded[c] == needle), -1)
 
-        if haystack[cell] == needle:
-            return cell
-
-        if ho < haystack_size and haystack[ho] == needle:
-            return ho
-
-        if vo < haystack_size and haystack[vo] == needle:
-            return vo
-
-        if aso < haystack_size and haystack[aso] == needle:
-            return aso
-
-        if dso < haystack_size and haystack[dso] == needle:
-            return dso
-
-        if r90 < haystack_size and haystack[r90] == needle:
-            return r90
-
-        if r180 < haystack_size and haystack[r180] == needle:
-            return r180
-
-        if r270 < haystack_size and haystack[r270] == needle:
-            return r270
+        if found != -1:
+            return found
 
         if get_column_index(base, cell) != base_middle:
             cell += 1

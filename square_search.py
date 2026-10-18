@@ -16,6 +16,27 @@ def get_intersection_index(base, row_index, column_index):
 def get_opposite_index(length, index):
     return length + 1 - index
 
+def rotation_90(base, cell_index):
+    return get_intersection_index(
+        base,
+        get_column_index(base, cell_index),
+        get_opposite_index(base, get_row_index(base, cell_index))
+    )
+
+def rotation_180(base, cell_index):
+    return get_intersection_index(
+        base,
+        get_opposite_index(base, get_row_index(base, cell_index)),
+        get_opposite_index(base, get_column_index(base, cell_index))
+    )
+
+def rotation_270(base, cell_index):
+    return get_intersection_index(
+        base,
+        get_opposite_index(base, get_column_index(base, cell_index)),
+        get_row_index(base, cell_index)
+    )
+
 def horizontal_opposite(base, cell_index):
     return get_intersection_index(
         base,
@@ -59,7 +80,8 @@ def square_search(haystack, needle):
     while cell <= last_iterated_cell:
         ho  = horizontal_opposite(base, cell)
         vo  = vertical_opposite(base, cell)
-        dso = antidiagonal_opposite(base, cell)
+        aso = antidiagonal_opposite(base, cell)
+        dso = diagonal_opposite(base, cell)
 
         if haystack[cell] == needle:
             return cell
@@ -69,6 +91,9 @@ def square_search(haystack, needle):
 
         if vo < haystack_size and haystack[vo] == needle:
             return vo
+
+        if aso < haystack_size and haystack[aso] == needle:
+            return aso
 
         if dso < haystack_size and haystack[dso] == needle:
             return dso

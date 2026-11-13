@@ -73,10 +73,10 @@ def square_search(haystack, needle):
         # Reflections §8.6–§8.9 coincide with rotations §8.2–§8.5 here,
         # so only 4 distinct orbit members exist (not 8).
         cell = k * base + k
-        if padded[cell]                    == needle: return cell                      # §8.2 top-left
-        if padded[base*k + base - k - 1]   == needle: return base*k + base - k - 1    # §8.3 top-right
-        if padded[b2 - cell - 1]           == needle: return b2 - cell - 1            # §8.4 bottom-right
-        if padded[base*(base - k - 1) + k] == needle: return base*(base - k - 1) + k  # §8.5 bottom-left
+        if padded[cell]                    == needle: return cell                      # §8.2  Rotation 0°           top-left
+        if padded[base*k + base - k - 1]   == needle: return base*k + base - k - 1    # §8.3  Rotation 90°          top-right
+        if padded[b2 - cell - 1]           == needle: return b2 - cell - 1            # §8.4  Rotation 180°         bottom-right
+        if padded[base*(base - k - 1) + k] == needle: return base*(base - k - 1) + k  # §8.5  Rotation 270°         bottom-left
         # §8.6–§8.9 skipped — proven duplicates on the main diagonal
         #   §8.6 == §8.3  §8.7 == §8.5  §8.8 == §8.4  §8.9 == §8.2
 
@@ -92,14 +92,14 @@ def square_search(haystack, needle):
             r    = k + offset  # 0-based column index — c(b,n)−1 in §1.4
             cell = q * base + r  # intersection i(b, q+1, r+1) from §2; §8.2 canonical head
 
-            if padded[cell]                    == needle: return cell                      # §8.2 top-left,  above diagonal
-            if padded[base*r + base - q - 1]   == needle: return base*r + base - q - 1    # §8.3 top-right
-            if padded[b2 - cell - 1]           == needle: return b2 - cell - 1            # §8.4 bottom-right
-            if padded[base*(base - r - 1) + q] == needle: return base*(base - r - 1) + q  # §8.5 bottom-left
-            if padded[base*q - r + base - 1]   == needle: return base*q - r + base - 1    # §8.6 top-left,  below diagonal
-            if padded[base*(base - q - 1) + r] == needle: return base*(base - q - 1) + r  # §8.7 bottom-left
-            if padded[b2 - base*r - q - 1]     == needle: return b2 - base*r - q - 1      # §8.8 bottom-right
-            if padded[base*r + q]              == needle: return base*r + q               # §8.9 top-right
+            if padded[cell]                    == needle: return cell                      # §8.2  Rotation 0°           top-left,  above diagonal
+            if padded[base*r + base - q - 1]   == needle: return base*r + base - q - 1    # §8.3  Rotation 90°          top-right
+            if padded[b2 - cell - 1]           == needle: return b2 - cell - 1            # §8.4  Rotation 180°         bottom-right
+            if padded[base*(base - r - 1) + q] == needle: return base*(base - r - 1) + q  # §8.5  Rotation 270°         bottom-left
+            if padded[base*q - r + base - 1]   == needle: return base*q - r + base - 1    # §8.6  Horizontal Opposite   top-left,  below diagonal
+            if padded[base*(base - q - 1) + r] == needle: return base*(base - q - 1) + r  # §8.7  Vertical Opposite     bottom-left
+            if padded[b2 - base*r - q - 1]     == needle: return b2 - base*r - q - 1      # §8.8  Antidiagonal Opposite bottom-right
+            if padded[base*r + q]              == needle: return base*r + q               # §8.9  Diagonal Opposite     top-right
 
         # ── Last inner step (offset == last) ────────────────────────────────
         # For odd base: r = k + last = base_middle − 1 — the centre column.
@@ -112,15 +112,15 @@ def square_search(haystack, needle):
             r    = k + last    # 0-based column index — c(b,n)−1 in §1.4
             cell = q * base + r  # intersection i(b, q+1, r+1) from §2
 
-            if padded[cell]                    == needle: return cell                      # §8.2 top-left
-            if padded[base*r + base - q - 1]   == needle: return base*r + base - q - 1    # §8.3 top-right
-            if padded[b2 - cell - 1]           == needle: return b2 - cell - 1            # §8.4 bottom-right
-            if padded[base*(base - r - 1) + q] == needle: return base*(base - r - 1) + q  # §8.5 bottom-left
+            if padded[cell]                    == needle: return cell                      # §8.2  Rotation 0°           top-left
+            if padded[base*r + base - q - 1]   == needle: return base*r + base - q - 1    # §8.3  Rotation 90°          top-right
+            if padded[b2 - cell - 1]           == needle: return b2 - cell - 1            # §8.4  Rotation 180°         bottom-right
+            if padded[base*(base - r - 1) + q] == needle: return base*(base - r - 1) + q  # §8.5  Rotation 270°         bottom-left
             if not odd_base:                   # even base: no centre column, 4 more distinct heads
-                if padded[base*q - r + base - 1]   == needle: return base*q - r + base - 1    # §8.6
-                if padded[base*(base - q - 1) + r] == needle: return base*(base - q - 1) + r  # §8.7
-                if padded[b2 - base*r - q - 1]     == needle: return b2 - base*r - q - 1      # §8.8
-                if padded[base*r + q]               == needle: return base*r + q               # §8.9
+                if padded[base*q - r + base - 1]   == needle: return base*q - r + base - 1    # §8.6  Horizontal Opposite
+                if padded[base*(base - q - 1) + r] == needle: return base*(base - q - 1) + r  # §8.7  Vertical Opposite
+                if padded[b2 - base*r - q - 1]     == needle: return b2 - base*r - q - 1      # §8.8  Antidiagonal Opposite
+                if padded[base*r + q]               == needle: return base*r + q               # §8.9  Diagonal Opposite
             # §8.6–§8.9 skipped for odd base — proven duplicates on the centre column
 
     return -1  # needle not found

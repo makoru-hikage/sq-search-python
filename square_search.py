@@ -26,7 +26,11 @@ import math
 # ── Helper utilities ──────────────────────────────────────────────────────────
 
 def find_nearest_square_root(n):
-    """Return the ceiling of √n: the smallest integer b such that b² >= n."""
+    """Return the ceiling of √n: the smallest integer b such that b² >= n.
+
+    This is the base b defined in §1.1 of the SASQUARE paper.  All section
+    references throughout this module use b as the grid side length.
+    """
     b = math.isqrt(n)
     return b if b * b >= n else b + 1
 
@@ -43,9 +47,9 @@ def square_search(haystack, needle):
         Index of needle in haystack, or -1 if not found.
     """
     n           = len(haystack)
-    base        = find_nearest_square_root(n)   # side length of the virtual √n × √n grid
-    base_middle = (base + 1) // 2               # extent of the top-left quadrant (centre index + 1)
-    b2          = base * base                   # total cells in the padded grid
+    base        = find_nearest_square_root(n)   # §1.1 — side length of the virtual √n × √n grid
+    base_middle = (base + 1) // 2               # §7.1 — M(b) = ⌈b/2⌉; extent of the top-left quadrant
+    b2          = base * base                   # §1.2 — total cells in the padded grid
     odd_base    = base % 2 == 1                 # True when the grid has a physical centre column / row
 
     # Pad to a perfect square so every (row, col) address is valid.
@@ -56,7 +60,7 @@ def square_search(haystack, needle):
     else:
         padded = haystack + [object()] * (b2 - n)
 
-    # Walk the upper triangle of the top-left quadrant: all (q, r) pairs where
+    # Walk the upper triangle of the top-left quadrant (Q1, §7.5): all (q, r) pairs where
     # 0 <= q <= r < base_middle.  For each representative cell D₄ symmetry maps
     # (q, r) onto up to 8 cells spread across all four quadrants, so one step
     # covers the entire orbit.
@@ -74,6 +78,7 @@ def square_search(haystack, needle):
         if padded[b2 - cell - 1]           == needle: return b2 - cell - 1            # §8.4 bottom-right
         if padded[base*(base - k - 1) + k] == needle: return base*(base - k - 1) + k  # §8.5 bottom-left
         # §8.6–§8.9 skipped — proven duplicates on the main diagonal
+        #   §8.6 == §8.3  §8.7 == §8.5  §8.8 == §8.4  §8.9 == §8.2
 
         # last = number of offsets remaining after the diagonal for this triangle row
         # (also the value of r at the final step: r = k + last)
@@ -83,9 +88,9 @@ def square_search(haystack, needle):
         # The cell is off both axes of symmetry, so all 8 D₄ orbit members are
         # distinct — every one must be checked.
         for offset in range(1, last):
-            q    = k
-            r    = k + offset
-            cell = q * base + r              # §8.2 canonical head — top-left quadrant, above the diagonal
+            q    = k           # 0-based row index    — r(b,n)−1 in §1.3
+            r    = k + offset  # 0-based column index — c(b,n)−1 in §1.4
+            cell = q * base + r  # intersection i(b, q+1, r+1) from §2; §8.2 canonical head
 
             if padded[cell]                    == needle: return cell                      # §8.2 top-left,  above diagonal
             if padded[base*r + base - q - 1]   == needle: return base*r + base - q - 1    # §8.3 top-right
@@ -103,9 +108,9 @@ def square_search(haystack, needle):
         #   §8.6 == §8.2  §8.7 == §8.4  §8.8 == §8.3  §8.9 == §8.5
         # For even base: no centre column exists — all 8 heads remain distinct.
         if last > 0:
-            q    = k
-            r    = k + last
-            cell = q * base + r
+            q    = k           # 0-based row index    — r(b,n)−1 in §1.3
+            r    = k + last    # 0-based column index — c(b,n)−1 in §1.4
+            cell = q * base + r  # intersection i(b, q+1, r+1) from §2
 
             if padded[cell]                    == needle: return cell                      # §8.2 top-left
             if padded[base*r + base - q - 1]   == needle: return base*r + base - q - 1    # §8.3 top-right

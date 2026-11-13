@@ -30,18 +30,6 @@ def find_nearest_square_root(n):
     b = math.isqrt(n)
     return b if b * b >= n else b + 1
 
-def get_row_index(base, cell_index):
-    """Return the 1-based row of cell_index in a base × base grid."""
-    return cell_index // base + 1
-
-def get_column_index(base, cell_index):
-    """Return the 1-based column of cell_index in a base × base grid."""
-    return (cell_index % base) + 1
-
-def get_intersection_index(base, row_index, column_index):
-    """Return the 0-based cell index for 1-based (row_index, column_index)."""
-    return base * (row_index - 1) + (column_index - 1)
-
 # ── Core search ───────────────────────────────────────────────────────────────
 
 def square_search(haystack, needle):
